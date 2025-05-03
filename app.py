@@ -30,7 +30,7 @@ def get_genres():
 
 def get_top_movies():
     movies = []
-    url = f"{TMDB_BASE_URL}/movie/popular"
+    url = f"{TMDB_BASE_URL}/trending/all/day"
     params = {"language": "en-US", "page": 1}
     response = requests.get(url, headers=headers, params=params)
     if response.ok:
@@ -59,6 +59,58 @@ def index():
     # For now, both search and default display use the top movies list.
     recommended_movies = get_top_movies()
     return render_template("index.html", movies=recommended_movies)
+
+@app.route("/popular-movies", methods=["GET"])
+def popular_movies():
+    url = f"{TMDB_BASE_URL}/movie/popular"
+    params = {"language": "en-US", "page": 1}
+    response = requests.get(url, headers=headers, params=params)
+    movies = []
+    if response.ok:
+        data = response.json()
+        genres_lookup = get_genres()
+        for movie in data.get("results", [])[:10]:
+            title = movie.get("title")
+            poster_path = movie.get("poster_path")
+            poster_url = TMDB_IMAGE_BASE_URL + poster_path if poster_path else ""
+            description = movie.get("overview")
+            release_date = movie.get("release_date", "")
+            year = release_date.split("-")[0] if release_date else "N/A"
+            movie_genres = [genres_lookup.get(genre_id, "Unknown") for genre_id in movie.get("genre_ids", [])]
+            movies.append({
+                "title": title,
+                "poster": poster_url,
+                "description": description,
+                "genres": ", ".join(movie_genres),
+                "year": year
+            })
+    return render_template("index.html", movies=movies)
+
+@app.route("/popular-shows", methods=["GET"])
+def popular_shows():
+    url = f"{TMDB_BASE_URL}/tv/popular"
+    params = {"language": "en-US", "page": 1}
+    response = requests.get(url, headers=headers, params=params)
+    shows = []
+    if response.ok:
+        data = response.json()
+        genres_lookup = get_genres()
+        for show in data.get("results", [])[:10]:
+            title = show.get("name")
+            poster_path = show.get("poster_path")
+            poster_url = TMDB_IMAGE_BASE_URL + poster_path if poster_path else ""
+            description = show.get("overview")
+            release_date = show.get("first_air_date", "")
+            year = release_date.split("-")[0] if release_date else "N/A"
+            show_genres = [genres_lookup.get(genre_id, "Unknown") for genre_id in show.get("genre_ids", [])]
+            shows.append({
+                "title": title,
+                "poster": poster_url,
+                "description": description,
+                "genres": ", ".join(show_genres),
+                "year": year
+            })
+    return render_template("index.html", movies=shows)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
