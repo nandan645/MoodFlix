@@ -1,0 +1,146 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    background-color: #141414;
+    position: relative;
+}
+
+/* Sticky Header with Navigation */
+.sticky-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.sticky-header .logo {
+    font-size: 1.8em;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.sticky-header .nav-menu ul {
+    list-style: none;
+    display: flex;
+}
+
+.sticky-header .nav-menu ul li {
+    margin-left: 20px;
+}
+
+.sticky-header .nav-menu ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1em;
+    transition: color 0.3s ease;
+}
+
+.sticky-header .nav-menu ul li a:hover {
+    color: #e50914;
+}
+
+/* Fullscreen background image with a dark overlay */
+.background-image {
+    background-image: url('/static/images/background.png');
+    background-size: cover;
+    background-position: center;
+    filter: brightness(50%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+
+/* Movies section styling */
+.movies-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+}
+
+.movie-card {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    margin: 15px;
+    width: 300px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+}
+
+.movie-card img {
+    width: 100%;
+    height: auto;
+}
+
+.movie-info {
+    padding: 15px;
+}
+
+.movie-info h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.movie-info .genres {
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    color: #ccc;
+}
+
+.movie-info .description {
+    font-size: 0.9em;
+    line-height: 1.4;
+    height: 80px;
+    overflow: hidden;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin: 200px 0 200px;  /* Increased top and bottom margins */
+}
+
+.search-container form {
+    display: flex;
+    width: 50%;
+}
+
+.search-container input[type="text"] {
+    width: 100%;
+    padding: 16px 20px;  /* Increased input padding for a more prominent look */
+    border: none;
+    border-radius: 30px 0 0 30px;
+    outline: none;
+    font-size: 1em;
+}
+
+.search-container button {
+    padding: 16px 20px;  /* Increased button padding accordingly */
+    border: none;
+    background: #e50914;
+    color: #fff;
+    font-size: 1em;
+    border-radius: 0 30px 30px 0;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.search-container button:hover {
+    background: #f40612;
+}
+

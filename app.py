@@ -1,0 +1,61 @@
+from flask import Flask, render_template, request
+import requests
+
+app = Flask(__name__)
+
+TMDB_BASE_URL = "https://api.themoviedb.org/3"
+TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
+
+# Your Bearer token (keep it secure)
+TMDB_BEARER_TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMjc3NTFkZWMwODM3ZmU3N2Q1OGQwZTM5NzdiMmNkOSIsIm5iZiI6MS43MjkzNTE3NzI2NDMwMDAxZSs5LCJzdWIiOiI2NzEzZDA1YzBjYjYyNTJmOTkwODVmZGEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.43HlgKIfrO89-6DRDL2VbqKcxxg4qL1g0kS7LlVanRo"
+
+headers = {
+    "accept": "application/json",
+    "Authorization": TMDB_BEARER_TOKEN
+}
+
+def get_genres():
+    url = f"{TMDB_BASE_URL}/genre/movie/list"
+    params = {"language": "en-US"}
+    response = requests.get(url, headers=headers, params=params)
+    genres = {}
+    if response.ok:
+        data = response.json()
+        for genre in data.get("genres", []):
+            genres[genre["id"]] = genre["name"]
+    return genres
+
+def get_top_movies():
+    movies = []
+    url = f"{TMDB_BASE_URL}/movie/top_rated"
+    params = {"language": "en-US", "page": 1}
+    response = requests.get(url, headers=headers, params=params)
+    if response.ok:
+        data = response.json()
+        genres_lookup = get_genres()
+        for movie in data.get("results", [])[:10]:
+            title = movie.get("title")
+            poster_path = movie.get("poster_path")
+            poster_url = TMDB_IMAGE_BASE_URL + poster_path if poster_path else ""
+            description = movie.get("overview")
+            release_date = movie.get("release_date", "")
+            year = release_date.split("-")[0] if release_date else "N/A"
+            movie_genres = [genres_lookup.get(genre_id, "Unknown") for genre_id in movie.get("genre_ids", [])]
+            movies.append({
+                "title": title,
+                "poster": poster_url,
+                "description": description,
+                "genres": ", ".join(movie_genres),
+                "year": year
+            })
+    return movies
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    search_query = request.form.get("query", "")
+    # For now, both search and default display use the top movies list.
+    recommended_movies = get_top_movies()
+    return render_template("index.html", movies=recommended_movies)
+
+if __name__ == "__main__":
+    app.run(debug=True)
