@@ -19,7 +19,6 @@
         </div>
         <nav class="nav-menu">
             <ul>
-                <li><a href="/for-you">For You</a></li>
                 <li><a href="/popular-movies">Popular Movies</a></li>
                 <li><a href="/popular-shows">Popular Shows</a></li>
                 <li><a href="/about">About Us</a></li>
@@ -30,6 +29,14 @@
     <!-- Background Image (full-screen) -->
     <div class="background-image"></div>
     
+    <div class="heading-container">
+        <h1 class="main-heading">
+            Welcome to <span class="highlight">MoodFlix</span>
+            <img src="{{ url_for('static', filename='images/ai.png') }}" alt="Icon" height="42" class="heading-icon">
+        </h1>
+        <p class="sub-heading">Discover movies that match your mood!</p>
+    </div>
+
     <!-- Search Container (now with increased top and bottom padding) -->
     <div class="search-container">
         <form method="post" action="/">
@@ -46,7 +53,7 @@
             <div class="movie-info">
                 <h2>{{ movie.title }} ({{ movie.year }})</h2>
                 <p class="genres">{{ movie.genres }}</p>
-                <p class="description">{{ movie.description }}</p>
+                <!-- <p class="description">{{ movie.description }}</p> -->
             </div>
         </div>
         {% endfor %}

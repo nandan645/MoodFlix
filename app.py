@@ -30,7 +30,7 @@ def get_genres():
 
 def get_top_movies():
     movies = []
-    url = f"{TMDB_BASE_URL}/movie/top_rated"
+    url = f"{TMDB_BASE_URL}/movie/popular"
     params = {"language": "en-US", "page": 1}
     response = requests.get(url, headers=headers, params=params)
     if response.ok:
