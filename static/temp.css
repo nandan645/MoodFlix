@@ -179,16 +179,12 @@ body {
     left: 0;
     right: 0;
     height: 80%;
-    background: rgba(20, 20, 20, 0.6); /* semi-transparent */
-    backdrop-filter: blur(44px);       /* frosted glass */
-    -webkit-backdrop-filter: blur(44px); /* Safari support */
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.5);
+    background-color: white;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
     transition: bottom 0.3s ease-in-out;
     z-index: 1000;
     padding: 20px;
 }
-
 
 .overlay.open {
     bottom: 0;
@@ -203,7 +199,7 @@ body {
 }
 
 .overlay-content {
-    color: #ffffff;
+    color: #000;
     padding: 20px;
     position: relative;
     height: 100%;
@@ -228,14 +224,13 @@ body {
 .chip {
     display: flex;
     align-items: center;
-    background-color: #ffffff;
+    background-color: #f1f1f1;
     padding: 8px 12px;
     border-radius: 999px;
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    border: 1px solid #AC84FE;
-    color: #141414;
+    border: 1px solid #ccc;
 }
 
 .chip input[type="checkbox"] {
@@ -273,13 +268,10 @@ body {
     outline: none;
     font-size: 1em;
     transition: border-color 0.3s ease; /* Smooth transition for border color */
-    color: #141414; 
-    /* background-color: #141414; */
 }
 
 .search-overlay input[type="text"]:focus {
     border-color: #8552ED; /* Change border color on focus */
-    background-color: #141414;
 }
 
 .search-overlay button {

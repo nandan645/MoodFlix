@@ -130,5 +130,9 @@ def register():
         return f"Logged in as {username}"  # Temporary response
     return render_template("register.html")
 
+@app.route("/temp", methods=["GET", "POST"])
+def temp():
+    return render_template("temp.html")
+
 if __name__ == "__main__":
     app.run(debug=True)
