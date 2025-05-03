@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request
 import requests
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
@@ -7,7 +9,8 @@ TMDB_BASE_URL = "https://api.themoviedb.org/3"
 TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
 # Your Bearer token (keep it secure)
-TMDB_BEARER_TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMjc3NTFkZWMwODM3ZmU3N2Q1OGQwZTM5NzdiMmNkOSIsIm5iZiI6MS43MjkzNTE3NzI2NDMwMDAxZSs5LCJzdWIiOiI2NzEzZDA1YzBjYjYyNTJmOTkwODVmZGEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.43HlgKIfrO89-6DRDL2VbqKcxxg4qL1g0kS7LlVanRo"
+load_dotenv()
+TMDB_BEARER_TOKEN = os.getenv("TMDB_BEARER_TOKEN")
 
 headers = {
     "accept": "application/json",
@@ -56,6 +59,15 @@ def index():
     # For now, both search and default display use the top movies list.
     recommended_movies = get_top_movies()
     return render_template("index.html", movies=recommended_movies)
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        # Add authentication logic here
+        return f"Logged in as {username}"  # Temporary response
+    return render_template("login.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
