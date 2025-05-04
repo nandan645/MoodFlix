@@ -37,12 +37,9 @@
         <p class="sub-heading">Discover movies that match your mood!</p>
     </div>
 
-    <!-- Search Container (now with increased top and bottom padding) -->
-    <div class="search-container">
-        <form method="post" action="/">
-            <input type="text" name="query" placeholder="Search for movies or shows..." required>
-            <button type="submit">Search</button>
-        </form>
+    <!-- Search Button -->
+    <div class="search-button-container">
+        <button id="open-overlay-btn" class="search-button">Ready, Set, Binge!</button>
     </div>
     
     <!-- Movies Section -->
@@ -58,71 +55,46 @@
         </div>
         {% endfor %}
     </section>
+
 <!-- Slide-in Overlay -->
 <div class="overlay" id="overlay">
     <div class="overlay-content">
         <span class="overlay-close" onclick="closeOverlay()">✕</span>
 
-        <!-- Reuse the existing search bar -->
+        <!-- Search Overlay -->
         <div class="search-overlay">
             <form method="post" action="/">
-                <input type="text" name="query" placeholder="Search for movies or shows..." required>
+                <input type="text" name="query" placeholder="Express yourself here, ur mood ..." required>
                 <button type="submit">Search</button>
             </form>
         </div>
 
-        <!-- Filters Section -->
-        <div class="filter-section">
-            <h3>Genres</h3>
-            <div class="chip-group">
-                <label class="chip"><input type="checkbox" name="genre" value="Action"> Action</label>
-                <label class="chip"><input type="checkbox" name="genre" value="Comedy"> Comedy</label>
-                <label class="chip"><input type="checkbox" name="genre" value="Drama"> Drama</label>
-                <label class="chip"><input type="checkbox" name="genre" value="Thriller"> Thriller</label>
-            </div>
-
-            <h3>Languages</h3>
-            <div class="chip-group">
-                <label class="chip"><input type="checkbox" name="language" value="English"> English</label>
-                <label class="chip"><input type="checkbox" name="language" value="Hindi"> Hindi</label>
-                <label class="chip"><input type="checkbox" name="language" value="Spanish"> Spanish</label>
-                <label class="chip"><input type="checkbox" name="language" value="Korean"> Korean</label>
-            </div>
-
-            <h3>Actors</h3>
-            <div class="chip-group">
-                <label class="chip"><input type="checkbox" name="actor" value="Tom Cruise"> Tom Cruise</label>
-                <label class="chip"><input type="checkbox" name="actor" value="Emma Stone"> Emma Stone</label>
-                <label class="chip"><input type="checkbox" name="actor" value="Shah Rukh Khan"> Shah Rukh Khan</label>
-                <label class="chip"><input type="checkbox" name="actor" value="Zendaya"> Zendaya</label>
-            </div>
+        <!-- Recording Section (moved outside search-overlay) -->
+        <div class="recording-section">
+            <button id="mic-button" class="mic-button">
+                🎤 Start Recording
+            </button>
+            <p id="recording-status" class="recording-status"></p>
         </div>
     </div>
 </div>
 
 
 <script>
-    const searchContainer = document.querySelector('.search-container');
     const overlay = document.getElementById('overlay');
+    const openOverlayBtn = document.getElementById('open-overlay-btn');
 
-    // Open overlay when search container is clicked
-    searchContainer.addEventListener('click', () => {
-        overlay.classList.add('open');
-    });
-
-    // Optional: prevent form from submitting
-    const form = searchContainer.querySelector('form');
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
+    // Open overlay when the button is clicked
+    openOverlayBtn.addEventListener('click', () => {
         overlay.classList.add('open');
     });
 
     // Close overlay when clicking outside of it
     document.addEventListener('click', (e) => {
         const isClickInsideOverlay = overlay.contains(e.target);
-        const isClickInsideSearch = searchContainer.contains(e.target);
+        const isClickInsideButton = openOverlayBtn.contains(e.target);
 
-        if (!isClickInsideOverlay && !isClickInsideSearch) {
+        if (!isClickInsideOverlay && !isClickInsideButton) {
             overlay.classList.remove('open');
         }
     });
@@ -131,8 +103,57 @@
     function closeOverlay() {
         overlay.classList.remove('open');
     }
-</script>
 
+
+    // Microphone recording functionality
+    let mediaRecorder;
+    let audioChunks = [];
+    const micButton = document.getElementById('mic-button');
+    const recordingStatus = document.getElementById('recording-status');
+    let isRecording = false;
+
+    micButton.addEventListener('click', async () => {
+        if (!isRecording) {
+            // Start recording
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+
+                    // Save the audio file
+                    const a = document.createElement('a');
+                    a.href = audioUrl;
+                    a.download = 'audio.wav';
+                    a.click();
+
+                    // Reset for next recording
+                    audioChunks = [];
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                micButton.textContent = '🛑 Stop Recording';
+                recordingStatus.textContent = 'Recording...';
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                recordingStatus.textContent = 'Error accessing microphone.';
+            }
+        } else {
+            // Stop recording
+            mediaRecorder.stop();
+            isRecording = false;
+            micButton.textContent = '🎤 Start Recording';
+            recordingStatus.textContent = 'Recording stopped. Saved as audio.wav.';
+        }
+    });
+</script>
 
 </body>
 </html>
